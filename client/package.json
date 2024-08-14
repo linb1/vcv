@@ -16,6 +16,7 @@
     "react-d3-tree": "^3.6.2",
     "react-dom": "^18",
     "react-redux": "^9.1.2",
+    "redux-persist": "^6.0.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
