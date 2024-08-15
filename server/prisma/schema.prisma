@@ -12,3 +12,19 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Node {
+  id       String   @id @default(uuid())
+  prev     String?  @db.Uuid
+  name     String
+  parent   Node?    @relation("NodeToParent", fields: [prev], references: [id])
+  children Node[]   @relation("NodeToParent")
+  comments Comment[]
+}
+
+model Comment {
+  id   Int    @id @default(autoincrement())
+  tag  String @db.Uuid
+  text String
+  node Node   @relation(fields: [tag], references: [id])
+}
