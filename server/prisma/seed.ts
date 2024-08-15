@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 async function deleteAllData(modelNames: string[]) {
   await Promise.all(
     modelNames.map(async (modelName) => {
-      const model = prisma[modelName as keyof typeof prisma];
+      const model: any = prisma[modelName as keyof typeof prisma];
       if (model) {
         await model.deleteMany({});
         console.log(`Cleared data from ${modelName}`);
@@ -33,7 +33,7 @@ async function seedData(fileNames: string[]) {
           .charAt(0)
           .toUpperCase() +
         path.basename(fileName, path.extname(fileName)).slice(1);
-      const model = prisma[modelName as keyof typeof prisma];
+      const model: any = prisma[modelName as keyof typeof prisma];
 
       if (model) {
         await Promise.all(jsonData.map((data: any) => model.create({ data })));
