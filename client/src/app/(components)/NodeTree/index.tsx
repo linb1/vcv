@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { RawNodeDatum } from "react-d3-tree";
+import Modal from "react-modal";
 
 const Tree = dynamic(() => import("react-d3-tree"), {
   ssr: false,
@@ -51,7 +52,7 @@ const NodeTree = () => {
     const nameBoxHeight = 18;
     const nameBoxWidth = nodeDatum.name.length * 7 + 2 * nameBoxPadding;
     return (
-      <g>
+      <g onClick={() => openModal(nodeDatum)}>
         <circle
           r="15"
           fill="lightgreen"
@@ -95,16 +96,120 @@ const NodeTree = () => {
     );
   };
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedNode, setSelectedNode] = useState<RawNodeDatum | null>(null);
+
+  const openModal = (nodeDatum: RawNodeDatum) => {
+    setSelectedNode(nodeDatum);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedNode(null);
+  };
+
   return (
-    <Tree
-      data={tree}
-      pathFunc="step"
-      renderCustomNodeElement={renderRectSvgNode}
-      translate={{
-        x: 500,
-        y: 350,
-      }}
-    />
+    <>
+      <Tree
+        data={tree}
+        pathFunc="step"
+        collapsible={false}
+        renderCustomNodeElement={renderRectSvgNode}
+        translate={{
+          x: 500,
+          y: 350,
+        }}
+      />
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Node Details"
+        ariaHideApp={false}
+        className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-2/4 bg-white rounded-2xl shadow-md border border-slate-300 p-4 w-1/2 h-1/2 overflow-y-auto"
+      >
+        <div className="relative">
+          {selectedNode && (
+            <div>
+              {/* HEADER */}
+              <h2 className="text-2xl pb-2">Node: {selectedNode.name}</h2>
+              <hr />
+              {/* ADD NODE */}
+              <div className="pb-10">
+                <h3 className="text-xl pt-6">Add a New Node</h3>
+                {/* NAME */}
+                <div className="pt-6">
+                  <label
+                    htmlFor="input-label"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                    placeholder="This is placeholder"
+                  />
+                </div>
+                {/* COMMENT */}
+                <div className="pt-2 pb-3">
+                  <div className="flex justify-between items-center">
+                    <label
+                      htmlFor="with-corner-hint"
+                      className="block text-sm font-medium mb-2"
+                    >
+                      Comment
+                    </label>
+                    <span className="block mb-2 text-sm text-gray-500 dark:text-neutral-500">
+                      Optional
+                    </span>
+                  </div>
+                  <textarea
+                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                    rows={3}
+                    placeholder="This is a textarea placeholder"
+                  />
+                </div>
+                {/* BUTTON */}
+                <button
+                  type="button"
+                  className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  Add Node
+                </button>
+              </div>
+
+              <hr />
+
+              {/* EDIT COMMENT */}
+              <div>
+                <h3 className="text-xl pt-4">Edit Comment</h3>
+                <div className="pt-2 pb-3">
+                  <textarea
+                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                    rows={3}
+                    placeholder="This is a textarea placeholder"
+                  />
+                </div>
+                {/* Button */}
+                <button
+                  type="button"
+                  className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  Update
+                </button>
+              </div>
+              <button
+                className="absolute top-1 right-1 text-2xl"
+                onClick={closeModal}
+              >
+                X
+              </button>
+            </div>
+          )}
+        </div>
+      </Modal>
+    </>
   );
 };
 
