@@ -9,6 +9,12 @@ type NodeModalProps = {
   selectedNode: RawNodeDatum | null;
 };
 
+const customStyles = {
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.25)",
+  },
+};
+
 const NodeModal = ({
   modalIsOpen,
   closeModal,
@@ -20,6 +26,8 @@ const NodeModal = ({
       onRequestClose={closeModal}
       contentLabel="Node Details"
       ariaHideApp={false}
+      style={customStyles}
+      shouldFocusAfterRender={false}
       className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-2/4 bg-white rounded-2xl shadow-md border border-slate-300 p-4 w-1/2 h-1/2 overflow-y-auto"
     >
       <div className="relative">
