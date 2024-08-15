@@ -1,9 +1,8 @@
-import Image from "next/image";
-
+import NodeTree from "@/app/(components)/NodeTree";
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      hello
-    </main>
+    <div className="h-screen w-screen bg-slate-100">
+      <NodeTree />
+    </div>
   );
 }
