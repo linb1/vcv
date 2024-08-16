@@ -6,6 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import nodeRoutes from "./routes/nodeRoutes";
+import commentRoutes from "./routes/commentRoutes";
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors());
 
 //Routes
 app.use("/nodes", nodeRoutes);
+app.use("/comments", commentRoutes);
 
 //Server
 const port = process.env.PORT || 3001;
