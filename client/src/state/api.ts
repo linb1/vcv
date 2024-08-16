@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { RawNodeDatum } from "react-d3-tree";
 
 export interface Nodes {
   id: string;
@@ -16,7 +17,7 @@ export interface Comments {
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
-  tagTypes: ["Nodes", "Comments"],
+  tagTypes: ["Nodes", "Comments", "NodesAndComments"],
   endpoints: (build) => ({
     getNodes: build.query<Nodes, void>({
       query: () => "/nodes",
@@ -26,7 +27,15 @@ export const api = createApi({
       query: () => "/comments",
       providesTags: ["Comments"],
     }),
+    getNodesAndComments: build.query<RawNodeDatum, void>({
+      query: () => "/nodesAndComments",
+      providesTags: ["NodesAndComments"],
+    }),
   }),
 });
 
-export const { useGetNodesQuery, useGetCommentsQuery } = api;
+export const {
+  useGetNodesQuery,
+  useGetCommentsQuery,
+  useGetNodesAndCommentsQuery,
+} = api;
