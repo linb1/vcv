@@ -3,16 +3,19 @@ import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { RawNodeDatum } from "react-d3-tree";
 import NodeModal from "@/app/(components)/Modal";
-import { useGetNodesQuery } from "@/state/api";
+import { useGetNodesQuery, useGetCommentsQuery } from "@/state/api";
 
 const Tree = dynamic(() => import("react-d3-tree"), {
   ssr: false,
 });
 
 const NodeTree = () => {
-  const { data, isLoading } = useGetNodesQuery();
+  const { data: nodeData, isLoading: isLoadingNode } = useGetNodesQuery();
+  const { data: commentData, isLoading: isLoadingComment } =
+    useGetCommentsQuery();
 
-  console.log(data);
+  console.log(nodeData);
+  console.log(commentData);
   const [tree, setTree] = useState<RawNodeDatum | RawNodeDatum[]>({
     name: "A",
     attributes: {
