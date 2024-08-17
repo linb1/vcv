@@ -19,6 +19,7 @@ export const getNodesAndComments = async (
         attributes: {
           id: node.id.toUpperCase(),
           path: node.path,
+          comments: [],
         },
         children: [],
       };
@@ -27,8 +28,19 @@ export const getNodesAndComments = async (
     // Attach comments to nodes
     comments.forEach((comment) => {
       if (nodeMap[comment.tag]) {
-        nodeMap[comment.tag].attributes.comment = comment.text;
+        nodeMap[comment.tag].attributes.comments.push({
+          id: comment.id,
+          tag: comment.tag,
+          text: comment.text,
+        });
       }
+    });
+
+    // Stringify the comments array
+    Object.keys(nodeMap).forEach((key) => {
+      nodeMap[key].attributes.comments = JSON.stringify(
+        nodeMap[key].attributes.comments
+      );
     });
 
     // Find the root node (node with no parent)
