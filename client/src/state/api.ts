@@ -8,6 +8,12 @@ export interface Nodes {
   path: string;
 }
 
+export interface NewNode {
+  prev: string | null;
+  name: string;
+  path: string;
+}
+
 export interface Comments {
   id: string;
   tag: string;
@@ -31,11 +37,25 @@ export const api = createApi({
       query: () => "/nodesAndComments",
       providesTags: ["NodesAndComments"],
     }),
+    createNode: build.mutation<Nodes, NewNode>({
+      query: (newNode) => ({
+        url: "/nodes",
+        method: "POST",
+        body: newNode,
+      }),
+      invalidatesTags: ["NodesAndComments"],
+    }),
   }),
 });
+
+/**
+ * addNode(data).then((response) => { if (response.ok) { refetch(); } })
+ *
+ */
 
 export const {
   useGetNodesQuery,
   useGetCommentsQuery,
   useGetNodesAndCommentsQuery,
+  useCreateNodeMutation,
 } = api;
