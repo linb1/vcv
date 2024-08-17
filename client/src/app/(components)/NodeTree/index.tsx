@@ -1,44 +1,49 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { RawNodeDatum } from "react-d3-tree";
 import NodeModal from "@/app/(components)/Modal";
+import {
+  useGetNodesQuery,
+  useGetCommentsQuery,
+  useGetNodesAndCommentsQuery,
+  useCreateNodeMutation,
+} from "@/state/api";
 
 const Tree = dynamic(() => import("react-d3-tree"), {
   ssr: false,
 });
 
+type NodeFormData = {
+  prev: string;
+  name: string;
+  path: string;
+};
+
 const NodeTree = () => {
-  const [tree, setTree] = useState<RawNodeDatum | RawNodeDatum[]>({
-    name: "A",
-    attributes: {
-      id: "87F0C113-97D6-4356-B874-44FD17BE713C",
-    },
-    children: [
-      {
-        name: "B",
-        attributes: {
-          id: "5EAA7325-0169-40D7-A3F0-5B43DB3F7DD2",
-        },
-        children: [],
+  const { data, isLoading } = useGetNodesAndCommentsQuery();
+  const [createNode] = useCreateNodeMutation();
+  const handleCreateNode = async (nodeData: NodeFormData) => {
+    await createNode(nodeData);
+  };
+
+  console.log(data);
+
+  const [tree, setTree] = useState<RawNodeDatum | RawNodeDatum[]>(
+    data || {
+      name: "Root",
+      attributes: {
+        id: "1",
+        path: "root",
       },
-      {
-        name: "C",
-        attributes: {
-          id: "8FF6ADC6-91B2-40CF-A721-8809C9F4825A",
-          comment: "Lorem ipsum dolor sit",
-        },
-        children: [
-          {
-            name: "D",
-            attributes: {
-              id: "2FBFFD55-498D-4B91-AF0D-165DF990EAF5",
-            },
-            children: [],
-          },
-        ],
-      },
-    ],
+      children: [],
+    }
+  );
+
+  useEffect(() => {
+    if (!isLoading) {
+      setTree(data!);
+    }
   });
 
   const renderRectSvgNode = ({
@@ -125,6 +130,7 @@ const NodeTree = () => {
         modalIsOpen={modalIsOpen}
         closeModal={closeModal}
         selectedNode={selectedNode}
+        onCreateNode={handleCreateNode}
       />
     </>
   );

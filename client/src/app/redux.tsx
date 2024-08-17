@@ -43,10 +43,12 @@ const storage =
     : createWebStorage("local");
 
 const persistConfig = {
+  timeout: 500,
   key: "root",
   storage,
   whitelist: ["global"],
 };
+
 const rootReducer = combineReducers({
   global: globalReducer,
   [api.reducerPath]: api.reducer,
