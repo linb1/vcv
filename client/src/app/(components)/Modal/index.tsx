@@ -43,6 +43,8 @@ const NodeModal = ({
     text: "",
   });
 
+  const [commentArray, setCommentArray] = useState<any[]>([]);
+
   useEffect(() => {
     if (selectedNode?.attributes) {
       setNodeFormData({
@@ -55,6 +57,12 @@ const NodeModal = ({
       });
     }
   }, [selectedNode, nodeFormData.name]);
+
+  useEffect(() => {
+    if (selectedNode?.attributes?.comments) {
+      setCommentArray(JSON.parse(selectedNode?.attributes?.comments as string));
+    }
+  }, [selectedNode]);
 
   const closeAndReset = () => {
     closeModal();
@@ -77,7 +85,7 @@ const NodeModal = ({
       [name]: value,
     });
   };
-
+  console.log(commentArray);
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -134,16 +142,13 @@ const NodeModal = ({
             <div>
               <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
-                <textarea
-                  className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                  rows={3}
-                  placeholder="This is a textarea placeholder"
-                  value={
-                    selectedNode.attributes?.comment
-                      ? selectedNode.attributes?.comment.toLocaleString()
-                      : ""
-                  }
-                />
+                {commentArray.map((comment) => (
+                  <>
+                    <div>{comment.text}</div>
+                    <div>{comment.tag}</div>
+                    <div>{comment.id}</div>
+                  </>
+                ))}
               </div>
               {/* Button */}
               <button
