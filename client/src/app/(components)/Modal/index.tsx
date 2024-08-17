@@ -132,7 +132,7 @@ const NodeModal = ({
 
             {/* EDIT COMMENT */}
             <div>
-              <h3 className="text-xl pt-4">Edit Comment</h3>
+              <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
                 <textarea
                   className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
