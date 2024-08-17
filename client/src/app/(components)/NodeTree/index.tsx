@@ -161,12 +161,14 @@ const NodeTree = () => {
           y: 350,
         }}
       />
-      <NodeModal
-        modalIsOpen={modalIsOpen}
-        closeModal={closeModal}
-        selectedNode={selectedNode}
-        onCreateNode={handleCreateNode}
-      />
+      {modalIsOpen && (
+        <NodeModal
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          selectedNode={selectedNode}
+          onCreateNode={handleCreateNode}
+        />
+      )}
     </>
   );
 };
