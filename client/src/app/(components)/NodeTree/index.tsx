@@ -23,11 +23,11 @@ type NodeFormData = {
 const NodeTree = () => {
   const { data, isLoading } = useGetNodesAndCommentsQuery();
   const [createNode] = useCreateNodeMutation();
+  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+
   const handleCreateNode = async (nodeData: NodeFormData) => {
     await createNode(nodeData);
   };
-
-  console.log(data);
 
   const [tree, setTree] = useState<RawNodeDatum | RawNodeDatum[]>(
     data || {
@@ -46,6 +46,31 @@ const NodeTree = () => {
     }
   });
 
+  // Recursive function that checks all node. If no child exist, return empty array. Otherwise, continue until hovered node is found, then return branch
+  const findBranchUpToRoot = (
+    node: RawNodeDatum | null,
+    id: string
+  ): RawNodeDatum[] => {
+    //Base case
+    if (!node) return [];
+    if (node.attributes?.id === id) return [node];
+
+    let branch: RawNodeDatum[] = [];
+
+    if (node.children) {
+      for (const child of node.children) {
+        const result = findBranchUpToRoot(child, id);
+
+        if (result.length) {
+          branch = [node, ...result];
+          break;
+        }
+      }
+    }
+
+    return branch;
+  };
+
   const renderRectSvgNode = ({
     nodeDatum,
     toggleNode,
@@ -56,12 +81,22 @@ const NodeTree = () => {
     const nameBoxPadding = 5;
     const nameBoxHeight = 18;
     const nameBoxWidth = nodeDatum.name.length * 7 + 2 * nameBoxPadding;
+
+    const branch = findBranchUpToRoot(tree as RawNodeDatum, hoveredNodeId!);
+    const isHoveredBranch = branch.some(
+      (n) => n.attributes?.id === nodeDatum.attributes?.id
+    );
+
     return (
-      <g onClick={() => openModal(nodeDatum)}>
+      <g
+        onClick={() => openModal(nodeDatum)}
+        onMouseEnter={() => setHoveredNodeId(nodeDatum.attributes?.id)}
+        onMouseLeave={() => setHoveredNodeId(null)}
+      >
         <circle
           r="15"
           fill="lightgreen"
-          stroke="green"
+          stroke={isHoveredBranch ? "red" : "green"}
           strokeWidth="2"
           onClick={toggleNode}
         />
