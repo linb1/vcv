@@ -1,12 +1,24 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { RawNodeDatum } from "react-d3-tree";
+
+type NodeFormData = {
+  prev: string;
+  name: string;
+  path: string;
+};
+
+type CommentFormData = {
+  tag: string;
+  text: string;
+};
 
 type NodeModalProps = {
   modalIsOpen: boolean;
   closeModal: () => void;
   selectedNode: RawNodeDatum | null;
+  onCreateNode: (formData: NodeFormData) => void;
 };
 
 const customStyles = {
@@ -19,7 +31,47 @@ const NodeModal = ({
   modalIsOpen,
   closeModal,
   selectedNode,
+  onCreateNode,
 }: NodeModalProps) => {
+  const [nodeFormData, setNodeFormData] = useState({
+    prev: "",
+    name: "",
+    path: "",
+  });
+  const [commentFormData, setCommentFormData] = useState({
+    tag: "",
+    text: "",
+  });
+
+  useEffect(() => {
+    if (selectedNode?.attributes) {
+      setNodeFormData({
+        ...nodeFormData,
+        prev: selectedNode.attributes.id.toLocaleString(),
+        path:
+          selectedNode.attributes.path.toLocaleString() +
+          "/" +
+          nodeFormData.name,
+      });
+    }
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onCreateNode(nodeFormData);
+    closeModal();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    console.log(name);
+    console.log(value);
+    setNodeFormData({
+      ...nodeFormData,
+      [name]: value,
+    });
+  };
+
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -36,50 +88,38 @@ const NodeModal = ({
             {/* HEADER */}
             <h2 className="text-2xl pb-2">Node: {selectedNode.name}</h2>
             <div>{selectedNode.attributes?.id}</div>
+            <div>{selectedNode.attributes?.path}</div>
             <hr />
             {/* ADD NODE */}
             <div className="pb-10">
               <h3 className="text-xl pt-6">Add a New Node</h3>
               {/* NAME */}
-              <div className="pt-6">
-                <label
-                  htmlFor="input-label"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                  placeholder="This is placeholder"
-                />
-              </div>
-              {/* COMMENT */}
-              <div className="pt-2 pb-3">
-                <div className="flex justify-between items-center">
+              <form onSubmit={handleSubmit}>
+                <div className="pt-6 pb-3">
                   <label
-                    htmlFor="with-corner-hint"
+                    htmlFor="nodeName"
                     className="block text-sm font-medium mb-2"
                   >
-                    Comment
+                    Name
                   </label>
-                  <span className="block mb-2 text-sm text-gray-500 dark:text-neutral-500">
-                    Optional
-                  </span>
+                  <input
+                    type="text"
+                    name="name"
+                    onChange={handleChange}
+                    value={nodeFormData.name}
+                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                    placeholder="Name"
+                  />
                 </div>
-                <textarea
-                  className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                  rows={3}
-                  placeholder="This is a textarea placeholder"
-                />
-              </div>
-              {/* BUTTON */}
-              <button
-                type="button"
-                className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
-              >
-                Add Node
-              </button>
+
+                {/* BUTTON */}
+                <button
+                  type="submit"
+                  className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  Add Node
+                </button>
+              </form>
             </div>
 
             <hr />

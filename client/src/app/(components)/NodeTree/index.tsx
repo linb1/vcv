@@ -7,14 +7,25 @@ import {
   useGetNodesQuery,
   useGetCommentsQuery,
   useGetNodesAndCommentsQuery,
+  useCreateNodeMutation,
 } from "@/state/api";
 
 const Tree = dynamic(() => import("react-d3-tree"), {
   ssr: false,
 });
 
+type NodeFormData = {
+  prev: string;
+  name: string;
+  path: string;
+};
+
 const NodeTree = () => {
   const { data, isLoading } = useGetNodesAndCommentsQuery();
+  const [createNode] = useCreateNodeMutation();
+  const handleCreateNode = async (nodeData: NodeFormData) => {
+    await createNode(nodeData);
+  };
 
   console.log(data);
 
@@ -118,6 +129,7 @@ const NodeTree = () => {
         modalIsOpen={modalIsOpen}
         closeModal={closeModal}
         selectedNode={selectedNode}
+        onCreateNode={handleCreateNode}
       />
     </>
   );
