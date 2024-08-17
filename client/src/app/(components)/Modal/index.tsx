@@ -54,18 +54,24 @@ const NodeModal = ({
           nodeFormData.name,
       });
     }
-  });
+  }, [selectedNode, nodeFormData.name]);
+
+  const closeAndReset = () => {
+    closeModal();
+    setNodeFormData({
+      ...nodeFormData,
+      name: "",
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onCreateNode(nodeFormData);
-    closeModal();
+    closeAndReset();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(name);
-    console.log(value);
     setNodeFormData({
       ...nodeFormData,
       [name]: value,
@@ -75,7 +81,7 @@ const NodeModal = ({
   return (
     <Modal
       isOpen={modalIsOpen}
-      onRequestClose={closeModal}
+      onRequestClose={closeAndReset}
       contentLabel="Node Details"
       ariaHideApp={false}
       style={customStyles}
@@ -149,7 +155,7 @@ const NodeModal = ({
             </div>
             <button
               className="absolute top-1 right-1 text-2xl"
-              onClick={closeModal}
+              onClick={closeAndReset}
             >
               X
             </button>

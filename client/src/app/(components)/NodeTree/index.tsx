@@ -34,6 +34,7 @@ const NodeTree = () => {
       name: "Root",
       attributes: {
         id: "1",
+        path: "root",
       },
       children: [],
     }
