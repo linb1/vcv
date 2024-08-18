@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import { RawNodeDatum } from "react-d3-tree";
 import { useGetCommentsByNodeIdQuery } from "@/state/api";
@@ -45,47 +45,24 @@ const NodeModal = ({
     error,
     isLoading,
   } = useGetCommentsByNodeIdQuery(selectedNode!.attributes!.id.toString());
+
   console.log("query", comments);
+
   const [nodeFormData, setNodeFormData] = useState({
-    prev: "",
+    prev: selectedNode!.attributes!.id.toString(),
     name: "",
     path: "",
   });
+
   const [commentFormData, setCommentFormData] = useState({
     tag: "",
     text: "",
   });
 
-  const [commentArray, setCommentArray] = useState<Comment[]>([]);
-
-  useEffect(() => {
-    if (selectedNode?.attributes) {
-      setNodeFormData({
-        ...nodeFormData,
-        prev: selectedNode.attributes.id.toString(),
-        path: selectedNode.attributes.path.toString() + "/" + nodeFormData.name,
-      });
-    }
-  }, [selectedNode, nodeFormData.name]);
-
-  useEffect(() => {
-    if (selectedNode?.attributes?.comments) {
-      setCommentArray(JSON.parse(selectedNode?.attributes?.comments as string));
-    }
-  }, [selectedNode]);
-  // todo: remove this and replace with closemodal
-  const closeAndReset = () => {
-    closeModal();
-    // setNodeFormData({
-    //   ...nodeFormData,
-    //   name: "",
-    // });
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onCreateNode(nodeFormData);
-    closeAndReset();
+    closeModal();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,13 +70,14 @@ const NodeModal = ({
     setNodeFormData({
       ...nodeFormData,
       [name]: value,
+      path: selectedNode!.attributes!.path.toString() + "/" + value,
     });
   };
 
   return (
     <Modal
       isOpen={modalIsOpen}
-      onRequestClose={closeAndReset}
+      onRequestClose={closeModal}
       contentLabel="Node Details"
       ariaHideApp={false}
       style={customStyles}
@@ -114,10 +92,10 @@ const NodeModal = ({
             <div>{selectedNode.attributes?.id}</div>
             <div>{selectedNode.attributes?.path}</div>
             <hr />
+
             {/* ADD NODE */}
             <div className="pb-10">
               <h3 className="text-xl pt-6">Add a New Node</h3>
-              {/* NAME */}
               <form onSubmit={handleSubmit}>
                 <div className="pt-6 pb-3">
                   <label
@@ -135,8 +113,6 @@ const NodeModal = ({
                     placeholder="Name"
                   />
                 </div>
-
-                {/* BUTTON */}
                 <button
                   type="submit"
                   className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
@@ -148,7 +124,7 @@ const NodeModal = ({
 
             <hr />
 
-            {/* EDIT COMMENT */}
+            {/* COMMENT */}
             <div>
               <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
@@ -160,7 +136,6 @@ const NodeModal = ({
                     </div>
                   ))}
               </div>
-              {/* Button */}
               <button
                 type="button"
                 className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
@@ -168,9 +143,11 @@ const NodeModal = ({
                 Update
               </button>
             </div>
+
+            {/* CLOSE MODAL BUTTON */}
             <button
               className="absolute top-1 right-1 text-2xl"
-              onClick={closeAndReset}
+              onClick={closeModal}
             >
               X
             </button>
