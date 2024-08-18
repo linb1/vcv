@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { RawNodeDatum } from "react-d3-tree";
 import { useGetCommentsByNodeIdQuery } from "@/state/api";
+import Comment from "./modalComponents/comment";
 
 type NodeFormData = {
   prev: string;
@@ -162,11 +163,7 @@ const NodeModal = ({
                 <div className="pt-6">
                   {comments &&
                     comments.map((comment, index) => (
-                      <div key={index}>
-                        <div>{comment.text}</div>
-                        <div>{comment.tag}</div>
-                        <div>{comment.id}</div>
-                      </div>
+                      <Comment comment={comment} key={index} />
                     ))}
                 </div>
               </div>
