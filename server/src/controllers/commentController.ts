@@ -28,6 +28,24 @@ export const getCommentsByNodeId = async (
     });
     res.json(comments);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving comments" });
+    res.status(500).json({ message: "Error retrieving comments from node" });
+  }
+};
+
+export const createComment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { tag, text } = req.body;
+    const comment = await prisma.comments.create({
+      data: {
+        tag,
+        text,
+      },
+    });
+    res.status(201).json(comment);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating comment" });
   }
 };
