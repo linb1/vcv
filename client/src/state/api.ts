@@ -15,7 +15,7 @@ export interface NewNode {
 }
 
 export interface Comments {
-  id: string;
+  id: number;
   tag: string;
   text: string;
 }

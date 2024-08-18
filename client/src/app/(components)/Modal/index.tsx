@@ -83,6 +83,8 @@ const NodeModal = ({
     });
   };
 
+  console.log(comments);
+
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -163,6 +165,7 @@ const NodeModal = ({
                       <div key={index}>
                         <div>{comment.text}</div>
                         <div>{comment.tag}</div>
+                        <div>{comment.id}</div>
                       </div>
                     ))}
                 </div>
