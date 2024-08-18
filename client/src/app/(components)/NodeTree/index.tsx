@@ -3,12 +3,7 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { RawNodeDatum } from "react-d3-tree";
 import NodeModal from "@/app/(components)/Modal";
-import {
-  useGetNodesQuery,
-  useGetCommentsQuery,
-  useGetNodesAndCommentsQuery,
-  useCreateNodeMutation,
-} from "@/state/api";
+import { useGetNodesQuery, useCreateNodeMutation } from "@/state/api";
 
 const Tree = dynamic(() => import("react-d3-tree"), {
   ssr: false,
@@ -21,7 +16,7 @@ type NodeFormData = {
 };
 
 const NodeTree = () => {
-  const { data, isLoading } = useGetNodesAndCommentsQuery();
+  const { data, isLoading } = useGetNodesQuery();
   const [createNode] = useCreateNodeMutation();
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
@@ -137,7 +132,7 @@ const NodeTree = () => {
   };
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-  const [selectedNode, setSelectedNode] = useState<RawNodeDatum | null>(null);
+  const [selectedNode, setSelectedNode] = useState<RawNodeDatum>();
 
   const openModal = (nodeDatum: RawNodeDatum) => {
     setSelectedNode(nodeDatum);
@@ -146,7 +141,7 @@ const NodeTree = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setSelectedNode(null);
+    setSelectedNode(undefined);
   };
 
   return (
@@ -161,7 +156,7 @@ const NodeTree = () => {
           y: 350,
         }}
       />
-      {modalIsOpen && (
+      {modalIsOpen && selectedNode && (
         <NodeModal
           modalIsOpen={modalIsOpen}
           closeModal={closeModal}
