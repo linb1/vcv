@@ -106,7 +106,7 @@ const NodeModal = ({
             <div className="pb-10">
               <h3 className="text-xl pt-6">Add a New Node</h3>
               <form onSubmit={handleSubmitNode}>
-                <div className="pt-6 pb-3">
+                <div className="pt-3 pb-3">
                   <label
                     htmlFor="nodeName"
                     className="block text-sm font-medium mb-2"
@@ -138,7 +138,7 @@ const NodeModal = ({
               <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
                 <form onSubmit={handleSubmitComment}>
-                  <div className="pt-6 pb-3">
+                  <div className="pt-3 pb-3">
                     <input
                       type="text"
                       name="addComment"
@@ -156,13 +156,16 @@ const NodeModal = ({
                   </button>
                 </form>
 
-                {comments &&
-                  comments.map((comment, index) => (
-                    <div key={index}>
-                      <div>{comment.text}</div>
-                      <div>{comment.tag}</div>
-                    </div>
-                  ))}
+                {/* COMMENT SECTION */}
+                <div className="pt-6">
+                  {comments &&
+                    comments.map((comment, index) => (
+                      <div key={index}>
+                        <div>{comment.text}</div>
+                        <div>{comment.tag}</div>
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>
 
