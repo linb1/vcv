@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { RawNodeDatum } from "react-d3-tree";
+import { useGetCommentsByNodeIdQuery } from "@/state/api";
 
 type NodeFormData = {
   prev: string;
@@ -14,10 +15,16 @@ type CommentFormData = {
   text: string;
 };
 
+interface Comment {
+  id: number;
+  tag: string;
+  text: string;
+}
+
 type NodeModalProps = {
   modalIsOpen: boolean;
   closeModal: () => void;
-  selectedNode: RawNodeDatum | null;
+  selectedNode: RawNodeDatum;
   onCreateNode: (formData: NodeFormData) => void;
 };
 
@@ -33,6 +40,12 @@ const NodeModal = ({
   selectedNode,
   onCreateNode,
 }: NodeModalProps) => {
+  const {
+    data: comments,
+    error,
+    isLoading,
+  } = useGetCommentsByNodeIdQuery(selectedNode!.attributes!.id.toString());
+  console.log("query", comments);
   const [nodeFormData, setNodeFormData] = useState({
     prev: "",
     name: "",
@@ -43,17 +56,14 @@ const NodeModal = ({
     text: "",
   });
 
-  const [commentArray, setCommentArray] = useState<any[]>([]);
+  const [commentArray, setCommentArray] = useState<Comment[]>([]);
 
   useEffect(() => {
     if (selectedNode?.attributes) {
       setNodeFormData({
         ...nodeFormData,
-        prev: selectedNode.attributes.id.toLocaleString(),
-        path:
-          selectedNode.attributes.path.toLocaleString() +
-          "/" +
-          nodeFormData.name,
+        prev: selectedNode.attributes.id.toString(),
+        path: selectedNode.attributes.path.toString() + "/" + nodeFormData.name,
       });
     }
   }, [selectedNode, nodeFormData.name]);
@@ -63,13 +73,13 @@ const NodeModal = ({
       setCommentArray(JSON.parse(selectedNode?.attributes?.comments as string));
     }
   }, [selectedNode]);
-
+  // todo: remove this and replace with closemodal
   const closeAndReset = () => {
     closeModal();
-    setNodeFormData({
-      ...nodeFormData,
-      name: "",
-    });
+    // setNodeFormData({
+    //   ...nodeFormData,
+    //   name: "",
+    // });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -85,7 +95,7 @@ const NodeModal = ({
       [name]: value,
     });
   };
-  console.log(commentArray);
+
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -142,13 +152,13 @@ const NodeModal = ({
             <div>
               <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
-                {commentArray.map((comment) => (
-                  <>
-                    <div>{comment.text}</div>
-                    <div>{comment.tag}</div>
-                    <div>{comment.id}</div>
-                  </>
-                ))}
+                {comments &&
+                  comments.map((comment, index) => (
+                    <div key={index}>
+                      <div>{comment.text}</div>
+                      <div>{comment.tag}</div>
+                    </div>
+                  ))}
               </div>
               {/* Button */}
               <button
