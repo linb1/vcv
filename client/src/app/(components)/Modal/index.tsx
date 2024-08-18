@@ -162,9 +162,11 @@ const NodeModal = ({
                 {/* COMMENT SECTION */}
                 <div className="pt-6">
                   {comments &&
-                    comments.map((comment, index) => (
-                      <Comment comment={comment} key={index} />
-                    ))}
+                    [...comments]
+                      .reverse()
+                      .map((comment, index) => (
+                        <Comment comment={comment} key={index} />
+                      ))}
                 </div>
               </div>
             </div>
