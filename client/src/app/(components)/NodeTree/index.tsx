@@ -5,9 +5,8 @@ import { RawNodeDatum } from "react-d3-tree";
 import NodeModal from "@/app/(components)/Modal";
 import {
   useGetNodesQuery,
-  useGetCommentsQuery,
-  useGetNodesAndCommentsQuery,
   useCreateNodeMutation,
+  useCreateCommentMutation,
 } from "@/state/api";
 
 const Tree = dynamic(() => import("react-d3-tree"), {
@@ -20,13 +19,24 @@ type NodeFormData = {
   path: string;
 };
 
+type CommentFormData = {
+  tag: string;
+  text: string;
+};
+
 const NodeTree = () => {
-  const { data, isLoading } = useGetNodesAndCommentsQuery();
+  const { data, isLoading } = useGetNodesQuery();
   const [createNode] = useCreateNodeMutation();
+  const [createComment] = useCreateCommentMutation();
+
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
   const handleCreateNode = async (nodeData: NodeFormData) => {
     await createNode(nodeData);
+  };
+
+  const handleCreateComment = async (commentData: CommentFormData) => {
+    await createComment(commentData);
   };
 
   const [tree, setTree] = useState<RawNodeDatum | RawNodeDatum[]>(
@@ -137,7 +147,7 @@ const NodeTree = () => {
   };
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-  const [selectedNode, setSelectedNode] = useState<RawNodeDatum | null>(null);
+  const [selectedNode, setSelectedNode] = useState<RawNodeDatum>();
 
   const openModal = (nodeDatum: RawNodeDatum) => {
     setSelectedNode(nodeDatum);
@@ -146,7 +156,7 @@ const NodeTree = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setSelectedNode(null);
+    setSelectedNode(undefined);
   };
 
   return (
@@ -161,12 +171,15 @@ const NodeTree = () => {
           y: 350,
         }}
       />
-      <NodeModal
-        modalIsOpen={modalIsOpen}
-        closeModal={closeModal}
-        selectedNode={selectedNode}
-        onCreateNode={handleCreateNode}
-      />
+      {modalIsOpen && selectedNode && (
+        <NodeModal
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          selectedNode={selectedNode}
+          onCreateNode={handleCreateNode}
+          onCreateComment={handleCreateComment}
+        />
+      )}
     </>
   );
 };

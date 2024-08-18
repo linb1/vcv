@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import { RawNodeDatum } from "react-d3-tree";
+import { useGetCommentsByNodeIdQuery } from "@/state/api";
 
 type NodeFormData = {
   prev: string;
@@ -17,8 +18,9 @@ type CommentFormData = {
 type NodeModalProps = {
   modalIsOpen: boolean;
   closeModal: () => void;
-  selectedNode: RawNodeDatum | null;
+  selectedNode: RawNodeDatum;
   onCreateNode: (formData: NodeFormData) => void;
+  onCreateComment: (formData: CommentFormData) => void;
 };
 
 const customStyles = {
@@ -32,56 +34,59 @@ const NodeModal = ({
   closeModal,
   selectedNode,
   onCreateNode,
+  onCreateComment,
 }: NodeModalProps) => {
+  const { data: comments, isLoading } = useGetCommentsByNodeIdQuery(
+    selectedNode!.attributes!.id.toString()
+  );
+
   const [nodeFormData, setNodeFormData] = useState({
-    prev: "",
+    prev: selectedNode!.attributes!.id.toString(),
     name: "",
     path: "",
   });
+
   const [commentFormData, setCommentFormData] = useState({
-    tag: "",
+    tag: selectedNode!.attributes!.id.toString(),
     text: "",
   });
 
-  useEffect(() => {
-    if (selectedNode?.attributes) {
-      setNodeFormData({
-        ...nodeFormData,
-        prev: selectedNode.attributes.id.toLocaleString(),
-        path:
-          selectedNode.attributes.path.toLocaleString() +
-          "/" +
-          nodeFormData.name,
-      });
-    }
-  }, [selectedNode, nodeFormData.name]);
-
-  const closeAndReset = () => {
+  const handleSubmitNode = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onCreateNode(nodeFormData);
     closeModal();
-    setNodeFormData({
-      ...nodeFormData,
-      name: "",
+  };
+
+  const handleSubmitComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onCreateComment(commentFormData);
+    setCommentFormData({
+      ...commentFormData,
+      text: "",
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onCreateNode(nodeFormData);
-    closeAndReset();
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChangeNode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
     setNodeFormData({
       ...nodeFormData,
-      [name]: value,
+      name: value,
+      path: selectedNode!.attributes!.path.toString() + "/" + value,
+    });
+  };
+
+  const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setCommentFormData({
+      ...commentFormData,
+      text: value,
     });
   };
 
   return (
     <Modal
       isOpen={modalIsOpen}
-      onRequestClose={closeAndReset}
+      onRequestClose={closeModal}
       contentLabel="Node Details"
       ariaHideApp={false}
       style={customStyles}
@@ -96,12 +101,12 @@ const NodeModal = ({
             <div>{selectedNode.attributes?.id}</div>
             <div>{selectedNode.attributes?.path}</div>
             <hr />
+
             {/* ADD NODE */}
             <div className="pb-10">
               <h3 className="text-xl pt-6">Add a New Node</h3>
-              {/* NAME */}
-              <form onSubmit={handleSubmit}>
-                <div className="pt-6 pb-3">
+              <form onSubmit={handleSubmitNode}>
+                <div className="pt-3 pb-3">
                   <label
                     htmlFor="nodeName"
                     className="block text-sm font-medium mb-2"
@@ -111,14 +116,12 @@ const NodeModal = ({
                   <input
                     type="text"
                     name="name"
-                    onChange={handleChange}
+                    onChange={handleChangeNode}
                     value={nodeFormData.name}
                     className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                     placeholder="Name"
                   />
                 </div>
-
-                {/* BUTTON */}
                 <button
                   type="submit"
                   className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
@@ -130,32 +133,46 @@ const NodeModal = ({
 
             <hr />
 
-            {/* EDIT COMMENT */}
+            {/* COMMENT */}
             <div>
-              <h3 className="text-xl pt-4">Edit Comment</h3>
+              <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
-                <textarea
-                  className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                  rows={3}
-                  placeholder="This is a textarea placeholder"
-                  value={
-                    selectedNode.attributes?.comment
-                      ? selectedNode.attributes?.comment.toLocaleString()
-                      : ""
-                  }
-                />
+                <form onSubmit={handleSubmitComment}>
+                  <div className="pt-3 pb-3">
+                    <input
+                      type="text"
+                      name="addComment"
+                      onChange={handleChangeComment}
+                      value={commentFormData.text}
+                      className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                      placeholder="Add Comment"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                  >
+                    Add Comment
+                  </button>
+                </form>
+
+                {/* COMMENT SECTION */}
+                <div className="pt-6">
+                  {comments &&
+                    comments.map((comment, index) => (
+                      <div key={index}>
+                        <div>{comment.text}</div>
+                        <div>{comment.tag}</div>
+                      </div>
+                    ))}
+                </div>
               </div>
-              {/* Button */}
-              <button
-                type="button"
-                className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
-              >
-                Update
-              </button>
             </div>
+
+            {/* CLOSE MODAL BUTTON */}
             <button
               className="absolute top-1 right-1 text-2xl"
-              onClick={closeAndReset}
+              onClick={closeModal}
             >
               X
             </button>
