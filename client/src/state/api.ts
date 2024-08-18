@@ -20,6 +20,11 @@ export interface Comments {
   text: string;
 }
 
+export interface NewComment {
+  tag: string;
+  text: string;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
@@ -45,6 +50,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Nodes"],
     }),
+    createComment: build.mutation<Comments, NewComment>({
+      query: (newComment) => ({
+        url: "/comments",
+        method: "POST",
+        body: newComment,
+      }),
+      invalidatesTags: ["Comments"],
+    }),
   }),
 });
 
@@ -53,4 +66,5 @@ export const {
   useGetCommentsQuery,
   useCreateNodeMutation,
   useGetCommentsByNodeIdQuery,
+  useCreateCommentMutation,
 } = api;
