@@ -164,8 +164,8 @@ const NodeModal = ({
                   {comments &&
                     [...comments]
                       .reverse()
-                      .map((comment, index) => (
-                        <Comment comment={comment} key={index} />
+                      .map((comment) => (
+                        <Comment comment={comment} key={comment.id} />
                       ))}
                 </div>
               </div>
