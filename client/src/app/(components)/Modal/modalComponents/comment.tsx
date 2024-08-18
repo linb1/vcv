@@ -1,3 +1,4 @@
+import { useUpdateCommentMutation } from "@/state/api";
 import React, { useState } from "react";
 
 export interface Comment {
@@ -11,8 +12,17 @@ type CommentProps = {
 };
 
 const Comment = ({ comment }: CommentProps) => {
+  const [updateComment] = useUpdateCommentMutation();
   const [displayedText, setDisplayedText] = useState(comment.text);
   const [isEditing, setIsEditing] = useState(false);
+
+  const handleUpdateComment = async (id: number) => {
+    try {
+      await updateComment({ id, text: displayedText }).unwrap();
+    } catch (error) {
+      console.error("Failed to update comment", error);
+    }
+  };
 
   const handleIsEditing = () => {
     setIsEditing(!isEditing);
@@ -24,6 +34,7 @@ const Comment = ({ comment }: CommentProps) => {
   };
 
   const handleSubmit = () => {
+    handleUpdateComment(comment.id);
     setIsEditing(!isEditing);
   };
 
