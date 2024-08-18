@@ -15,17 +15,12 @@ type CommentFormData = {
   text: string;
 };
 
-interface Comment {
-  id: number;
-  tag: string;
-  text: string;
-}
-
 type NodeModalProps = {
   modalIsOpen: boolean;
   closeModal: () => void;
   selectedNode: RawNodeDatum;
   onCreateNode: (formData: NodeFormData) => void;
+  onCreateComment: (formData: CommentFormData) => void;
 };
 
 const customStyles = {
@@ -39,14 +34,11 @@ const NodeModal = ({
   closeModal,
   selectedNode,
   onCreateNode,
+  onCreateComment,
 }: NodeModalProps) => {
-  const {
-    data: comments,
-    error,
-    isLoading,
-  } = useGetCommentsByNodeIdQuery(selectedNode!.attributes!.id.toString());
-
-  console.log("query", comments);
+  const { data: comments, isLoading } = useGetCommentsByNodeIdQuery(
+    selectedNode!.attributes!.id.toString()
+  );
 
   const [nodeFormData, setNodeFormData] = useState({
     prev: selectedNode!.attributes!.id.toString(),
@@ -55,7 +47,7 @@ const NodeModal = ({
   });
 
   const [commentFormData, setCommentFormData] = useState({
-    tag: "",
+    tag: selectedNode!.attributes!.id.toString(),
     text: "",
   });
 
@@ -65,12 +57,29 @@ const NodeModal = ({
     closeModal();
   };
 
+  const handleSubmitComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onCreateComment(commentFormData);
+    setCommentFormData({
+      ...commentFormData,
+      text: "",
+    });
+  };
+
   const handleChangeNode = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNodeFormData({
       ...nodeFormData,
       name: value,
       path: selectedNode!.attributes!.path.toString() + "/" + value,
+    });
+  };
+
+  const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setCommentFormData({
+      ...commentFormData,
+      text: value,
     });
   };
 
@@ -128,13 +137,13 @@ const NodeModal = ({
             <div>
               <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
-                <form>
+                <form onSubmit={handleSubmitComment}>
                   <div className="pt-6 pb-3">
                     <input
                       type="text"
                       name="addComment"
-                      onChange={handleChangeNode}
-                      value={nodeFormData.name}
+                      onChange={handleChangeComment}
+                      value={commentFormData.text}
                       className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                       placeholder="Add Comment"
                     />
@@ -155,12 +164,6 @@ const NodeModal = ({
                     </div>
                   ))}
               </div>
-              <button
-                type="button"
-                className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
-              >
-                Update
-              </button>
             </div>
 
             {/* CLOSE MODAL BUTTON */}

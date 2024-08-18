@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { RawNodeDatum } from "react-d3-tree";
 import NodeModal from "@/app/(components)/Modal";
-import { useGetNodesQuery, useCreateNodeMutation } from "@/state/api";
+import {
+  useGetNodesQuery,
+  useCreateNodeMutation,
+  useCreateCommentMutation,
+} from "@/state/api";
 
 const Tree = dynamic(() => import("react-d3-tree"), {
   ssr: false,
@@ -15,13 +19,24 @@ type NodeFormData = {
   path: string;
 };
 
+type CommentFormData = {
+  tag: string;
+  text: string;
+};
+
 const NodeTree = () => {
   const { data, isLoading } = useGetNodesQuery();
   const [createNode] = useCreateNodeMutation();
+  const [createComment] = useCreateCommentMutation();
+
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
   const handleCreateNode = async (nodeData: NodeFormData) => {
     await createNode(nodeData);
+  };
+
+  const handleCreateComment = async (commentData: CommentFormData) => {
+    await createComment(commentData);
   };
 
   const [tree, setTree] = useState<RawNodeDatum | RawNodeDatum[]>(
@@ -162,6 +177,7 @@ const NodeTree = () => {
           closeModal={closeModal}
           selectedNode={selectedNode}
           onCreateNode={handleCreateNode}
+          onCreateComment={handleCreateComment}
         />
       )}
     </>
