@@ -28,7 +28,7 @@ const Comment = ({ comment }: CommentProps) => {
     setIsEditing(!isEditing);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setDisplayedText(value);
   };
@@ -43,14 +43,13 @@ const Comment = ({ comment }: CommentProps) => {
       {isEditing ? (
         <div>
           <form onSubmit={handleSubmit}>
-            <div className="pt-3 pb-3">
-              <input
-                type="text"
-                name="addComment"
+            <div>
+              <textarea
+                name="editComment"
                 onChange={handleChange}
                 value={displayedText}
-                className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                placeholder="Add Comment"
+                className="p-2 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                rows={2}
               />
             </div>
             <button className="text-xs border border-black" type="submit">

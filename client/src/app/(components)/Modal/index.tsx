@@ -76,7 +76,7 @@ const NodeModal = ({
     });
   };
 
-  const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setCommentFormData({
       ...commentFormData,
@@ -142,13 +142,13 @@ const NodeModal = ({
               <div className="pt-2 pb-3">
                 <form onSubmit={handleSubmitComment}>
                   <div className="pt-3 pb-3">
-                    <input
-                      type="text"
+                    <textarea
                       name="addComment"
                       onChange={handleChangeComment}
                       value={commentFormData.text}
                       className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                       placeholder="Add Comment"
+                      rows={2}
                     />
                   </div>
                   <button
