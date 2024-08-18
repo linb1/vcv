@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RawNodeDatum } from "react-d3-tree";
 
-export interface Nodes {
+export interface Node {
   id: string;
   prev: string | null;
   name: string;
@@ -23,9 +23,9 @@ export interface Comments {
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
-  tagTypes: ["Nodes", "Comments", "NodesAndComments"],
+  tagTypes: ["Nodes", "Comments"],
   endpoints: (build) => ({
-    getNodes: build.query<Nodes, void>({
+    getNodes: build.query<RawNodeDatum, void>({
       query: () => "/nodes",
       providesTags: ["Nodes"],
     }),
@@ -33,29 +33,24 @@ export const api = createApi({
       query: () => "/comments",
       providesTags: ["Comments"],
     }),
-    getNodesAndComments: build.query<RawNodeDatum, void>({
-      query: () => "/nodesAndComments",
-      providesTags: ["NodesAndComments"],
+    getCommentsByNodeId: build.query<Comments[], string>({
+      query: (nodeId) => `/comments/node/${nodeId}`,
+      providesTags: ["Comments"],
     }),
-    createNode: build.mutation<Nodes, NewNode>({
+    createNode: build.mutation<Node, NewNode>({
       query: (newNode) => ({
         url: "/nodes",
         method: "POST",
         body: newNode,
       }),
-      invalidatesTags: ["NodesAndComments"],
+      invalidatesTags: ["Nodes"],
     }),
   }),
 });
 
-/**
- * addNode(data).then((response) => { if (response.ok) { refetch(); } })
- *
- */
-
 export const {
   useGetNodesQuery,
   useGetCommentsQuery,
-  useGetNodesAndCommentsQuery,
   useCreateNodeMutation,
+  useGetCommentsByNodeIdQuery,
 } = api;
