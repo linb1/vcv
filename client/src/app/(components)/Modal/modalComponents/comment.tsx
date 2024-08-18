@@ -39,7 +39,7 @@ const Comment = ({ comment }: CommentProps) => {
   };
 
   return (
-    <div>
+    <div className="p-2 mb-3 rounded-lg bg-slate-50">
       {isEditing ? (
         <div>
           <form onSubmit={handleSubmit}>
@@ -52,7 +52,10 @@ const Comment = ({ comment }: CommentProps) => {
                 rows={2}
               />
             </div>
-            <button className="text-xs border border-black" type="submit">
+            <button
+              className="text-xs px-2 rounded-xl bg-green-100"
+              type="submit"
+            >
               Save
             </button>
           </form>
@@ -61,7 +64,7 @@ const Comment = ({ comment }: CommentProps) => {
         <div>
           <div>{displayedText}</div>
           <button
-            className="text-xs border border-black"
+            className="text-xs px-2 rounded-xl bg-blue-100"
             onClick={handleIsEditing}
           >
             Edit
