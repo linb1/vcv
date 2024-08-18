@@ -25,6 +25,11 @@ export interface NewComment {
   text: string;
 }
 
+export interface UpdateComment {
+  id: number;
+  text: string;
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
   reducerPath: "api",
@@ -58,6 +63,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Comments"],
     }),
+    updateComment: build.mutation<Comments, UpdateComment>({
+      query: ({ id, text }) => ({
+        url: `/comments/${id}`,
+        method: "PUT",
+        body: { text },
+      }),
+      invalidatesTags: ["Comments"],
+    }),
   }),
 });
 
@@ -67,4 +80,5 @@ export const {
   useCreateNodeMutation,
   useGetCommentsByNodeIdQuery,
   useCreateCommentMutation,
+  useUpdateCommentMutation,
 } = api;
