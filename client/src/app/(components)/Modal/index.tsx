@@ -59,17 +59,17 @@ const NodeModal = ({
     text: "",
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitNode = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onCreateNode(nodeFormData);
     closeModal();
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChangeNode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
     setNodeFormData({
       ...nodeFormData,
-      [name]: value,
+      name: value,
       path: selectedNode!.attributes!.path.toString() + "/" + value,
     });
   };
@@ -96,7 +96,7 @@ const NodeModal = ({
             {/* ADD NODE */}
             <div className="pb-10">
               <h3 className="text-xl pt-6">Add a New Node</h3>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmitNode}>
                 <div className="pt-6 pb-3">
                   <label
                     htmlFor="nodeName"
@@ -107,7 +107,7 @@ const NodeModal = ({
                   <input
                     type="text"
                     name="name"
-                    onChange={handleChange}
+                    onChange={handleChangeNode}
                     value={nodeFormData.name}
                     className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                     placeholder="Name"
@@ -128,6 +128,25 @@ const NodeModal = ({
             <div>
               <h3 className="text-xl pt-4">Comments</h3>
               <div className="pt-2 pb-3">
+                <form>
+                  <div className="pt-6 pb-3">
+                    <input
+                      type="text"
+                      name="addComment"
+                      onChange={handleChangeNode}
+                      value={nodeFormData.name}
+                      className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                      placeholder="Add Comment"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                  >
+                    Add Comment
+                  </button>
+                </form>
+
                 {comments &&
                   comments.map((comment, index) => (
                     <div key={index}>
