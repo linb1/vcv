@@ -14,3 +14,20 @@ export const getComments = async (
     res.status(500).json({ message: "Error retrieving comments" });
   }
 };
+
+export const getCommentsByNodeId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { nodeId } = req.params;
+  try {
+    const comments = await prisma.comments.findMany({
+      where: {
+        tag: nodeId,
+      },
+    });
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving comments" });
+  }
+};
