@@ -6,7 +6,6 @@ import {
   useSelector,
   Provider,
 } from "react-redux";
-import globalReducer from "@/state";
 import { api } from "@/state/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
@@ -46,13 +45,13 @@ const persistConfig = {
   timeout: 500,
   key: "root",
   storage,
-  whitelist: ["global"],
+  whitelist: [api.reducerPath],
 };
 
 const rootReducer = combineReducers({
-  global: globalReducer,
   [api.reducerPath]: api.reducer,
 });
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const makeStore = () => {
