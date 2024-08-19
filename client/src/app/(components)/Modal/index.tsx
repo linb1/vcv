@@ -96,7 +96,7 @@ const NodeModal = ({
       ariaHideApp={false}
       style={customStyles}
       shouldFocusAfterRender={false}
-      className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-2/4 bg-white rounded-2xl shadow-md border border-slate-300 p-4 w-1/2 h-1/2 overflow-y-auto"
+      className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-2/4 bg-white rounded-2xl shadow-md border border-slate-300 p-4 w-1/2 h-3/5 overflow-y-auto"
     >
       <div className="relative">
         {selectedNode && (
