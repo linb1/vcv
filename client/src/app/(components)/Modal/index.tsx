@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import { RawNodeDatum } from "react-d3-tree";
 import { useGetCommentsByNodeIdQuery } from "@/state/api";
 import Comment from "./modalComponents/comment";
+import { X } from "lucide-react";
 
 type NodeFormData = {
   prev: string;
@@ -102,8 +103,7 @@ const NodeModal = ({
           <div>
             {/* HEADER */}
             <h2 className="text-2xl pb-2">Node: {selectedNode.name}</h2>
-            <div>{selectedNode.attributes?.id}</div>
-            <div>{selectedNode.attributes?.path}</div>
+
             <hr />
 
             {/* ADD NODE */}
@@ -179,7 +179,7 @@ const NodeModal = ({
               className="absolute top-1 right-1 text-2xl"
               onClick={closeModal}
             >
-              X
+              <X className="w-7 h-7 hover:opacity-50" />
             </button>
           </div>
         )}
