@@ -84,7 +84,8 @@ const NodeModal = ({
     });
   };
 
-  console.log(comments);
+  const isAddNodeButtonDisabled = nodeFormData.name.trim().length === 0;
+  const isAddCommentButtonDisabled = commentFormData.text.trim().length === 0;
 
   return (
     <Modal
@@ -121,13 +122,14 @@ const NodeModal = ({
                     name="name"
                     onChange={handleChangeNode}
                     value={nodeFormData.name}
-                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500"
                     placeholder="Name"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                  className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                  disabled={isAddNodeButtonDisabled}
                 >
                   Add Node
                 </button>
@@ -146,7 +148,7 @@ const NodeModal = ({
                       name="addComment"
                       onChange={handleChangeComment}
                       value={commentFormData.text}
-                      className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                      className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500"
                       placeholder="Add Comment"
                       rows={2}
                     />
@@ -154,6 +156,7 @@ const NodeModal = ({
                   <button
                     type="submit"
                     className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                    disabled={isAddCommentButtonDisabled}
                   >
                     Add Comment
                   </button>
