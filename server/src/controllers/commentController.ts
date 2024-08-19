@@ -56,8 +56,6 @@ export const updateComment = async (
 ): Promise<void> => {
   const { id } = req.params;
   const { text } = req.body;
-  console.log(id);
-  console.log(text);
 
   try {
     const updatedComment = await prisma.comments.update({
