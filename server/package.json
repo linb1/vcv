@@ -7,7 +7,7 @@
     "seed": "ts-node prisma/seed.ts",
     "postinstall": "npx prisma generate",
     "build": "rimraf dist && npx tsc",
-    "start": "npx prisma generate && npx prisma migrate deploy && npm run build && node dist/index.js",
+    "start": "npx prisma generate && npx prisma migrate deploy && npm run build && node dist/index.js && npm run seed",
     "dev": "npm run build && concurrently \"npx tsc -w\" \"nodemon --exec ts-node src/index.ts\""
   },
   "keywords": [],
