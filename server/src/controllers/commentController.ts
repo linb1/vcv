@@ -49,3 +49,23 @@ export const createComment = async (
     res.status(500).json({ message: "Error creating comment" });
   }
 };
+
+export const updateComment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  const { text } = req.body;
+  console.log(id);
+  console.log(text);
+
+  try {
+    const updatedComment = await prisma.comments.update({
+      where: { id: parseInt(id, 10) },
+      data: { text },
+    });
+    res.json(updatedComment);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating comment" });
+  }
+};

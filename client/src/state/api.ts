@@ -15,13 +15,18 @@ export interface NewNode {
 }
 
 export interface Comments {
-  id: string;
+  id: number;
   tag: string;
   text: string;
 }
 
 export interface NewComment {
   tag: string;
+  text: string;
+}
+
+export interface UpdateComment {
+  id: number;
   text: string;
 }
 
@@ -58,6 +63,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Comments"],
     }),
+    updateComment: build.mutation<Comments, UpdateComment>({
+      query: ({ id, text }) => ({
+        url: `/comments/${id}`,
+        method: "PUT",
+        body: { text },
+      }),
+      invalidatesTags: ["Comments"],
+    }),
   }),
 });
 
@@ -67,4 +80,5 @@ export const {
   useCreateNodeMutation,
   useGetCommentsByNodeIdQuery,
   useCreateCommentMutation,
+  useUpdateCommentMutation,
 } = api;

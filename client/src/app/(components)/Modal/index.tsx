@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { RawNodeDatum } from "react-d3-tree";
 import { useGetCommentsByNodeIdQuery } from "@/state/api";
+import Comment from "./modalComponents/comment";
 
 type NodeFormData = {
   prev: string;
@@ -75,13 +76,16 @@ const NodeModal = ({
     });
   };
 
-  const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setCommentFormData({
       ...commentFormData,
       text: value,
     });
   };
+
+  const isAddNodeButtonDisabled = nodeFormData.name.trim().length === 0;
+  const isAddCommentButtonDisabled = commentFormData.text.trim().length === 0;
 
   return (
     <Modal
@@ -118,13 +122,14 @@ const NodeModal = ({
                     name="name"
                     onChange={handleChangeNode}
                     value={nodeFormData.name}
-                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                    className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500"
                     placeholder="Name"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                  className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-100 text-green-800 hover:bg-green-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                  disabled={isAddNodeButtonDisabled}
                 >
                   Add Node
                 </button>
@@ -139,18 +144,19 @@ const NodeModal = ({
               <div className="pt-2 pb-3">
                 <form onSubmit={handleSubmitComment}>
                   <div className="pt-3 pb-3">
-                    <input
-                      type="text"
+                    <textarea
                       name="addComment"
                       onChange={handleChangeComment}
                       value={commentFormData.text}
-                      className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                      className="py-3 px-4 block w-full border border-gray-200 rounded-lg text-sm focus:ring-blue-500"
                       placeholder="Add Comment"
+                      rows={2}
                     />
                   </div>
                   <button
                     type="submit"
                     className="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+                    disabled={isAddCommentButtonDisabled}
                   >
                     Add Comment
                   </button>
@@ -159,12 +165,11 @@ const NodeModal = ({
                 {/* COMMENT SECTION */}
                 <div className="pt-6">
                   {comments &&
-                    comments.map((comment, index) => (
-                      <div key={index}>
-                        <div>{comment.text}</div>
-                        <div>{comment.tag}</div>
-                      </div>
-                    ))}
+                    [...comments]
+                      .reverse()
+                      .map((comment) => (
+                        <Comment comment={comment} key={comment.id} />
+                      ))}
                 </div>
               </div>
             </div>
