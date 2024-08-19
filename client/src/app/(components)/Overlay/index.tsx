@@ -4,7 +4,7 @@ import React from "react";
 const Overlay = () => {
   return (
     <div className="fixed h-screen w-1/5 min-w-60 bg-white shadow-md border border-slate-300">
-      <div className="flex flex-col justify-center items-center gap-20 px-5 py-20">
+      <div className="flex flex-col justify-center items-center gap-10 px-5 py-20">
         <Network className="w-20 h-20" />
         <h1 className="text-center text-3xl">Version Control Visualizer</h1>
 
