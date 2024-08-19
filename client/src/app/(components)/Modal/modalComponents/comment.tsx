@@ -46,7 +46,7 @@ const Comment = ({ comment }: CommentProps) => {
   return (
     <div className="py-2 px-4 mb-3 rounded-lg bg-slate-50">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-full border border-blue-300 flex justify-center items-center overflow-hidden">
+        <div className="w-10 h-10 rounded-full border border-blue-300 flex justify-center items-center overflow-hidden flex-shrink-0">
           <UserRound className="w-10 h-10 bg-blue-200" color="#FFFFFF" />
         </div>
         {isEditing ? (
