@@ -32,12 +32,12 @@ const NodeTree = () => {
 
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
-  //Process form to create node
+  //Processes form to create node
   const handleCreateNode = async (nodeData: NodeFormData) => {
     await createNode(nodeData);
   };
 
-  //Process form to create comment
+  //Processes form to create comment
   const handleCreateComment = async (commentData: CommentFormData) => {
     await createComment(commentData);
   };
