@@ -39,10 +39,6 @@ export const api = createApi({
       query: () => "/nodes",
       providesTags: ["Nodes"],
     }),
-    getComments: build.query<Comments, void>({
-      query: () => "/comments",
-      providesTags: ["Comments"],
-    }),
     getCommentsByNodeId: build.query<Comments[], string>({
       query: (nodeId) => `/comments/node/${nodeId}`,
       providesTags: ["Comments"],
@@ -76,7 +72,6 @@ export const api = createApi({
 
 export const {
   useGetNodesQuery,
-  useGetCommentsQuery,
   useCreateNodeMutation,
   useGetCommentsByNodeIdQuery,
   useCreateCommentMutation,
