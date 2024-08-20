@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import { RawNodeDatum } from "react-d3-tree";
 import NodeModal from "@/app/(components)/Modal";
@@ -50,11 +50,24 @@ const NodeTree = () => {
     }
   );
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     if (!isLoading) {
+      // Update tree data
       setTree(data!);
     }
-  });
+
+    if (containerRef.current) {
+      // Calculate translation
+      const { width, height } = containerRef.current.getBoundingClientRect();
+      setTranslate({
+        x: width / 2,
+        y: height / 2,
+      });
+    }
+  }, [containerRef, data, isLoading]);
 
   // Recursive function that checks all node. If no child exist, return empty array. Otherwise, continue until hovered node is found, then return branch
   const findBranchUpToRoot = (
@@ -70,14 +83,12 @@ const NodeTree = () => {
     if (node.children) {
       for (const child of node.children) {
         const result = findBranchUpToRoot(child, id);
-
         if (result.length) {
           branch = [node, ...result];
           break;
         }
       }
     }
-
     return branch;
   };
 
@@ -160,16 +171,13 @@ const NodeTree = () => {
   };
 
   return (
-    <>
+    <div ref={containerRef} style={{ width: "100%", height: "100vh" }}>
       <Tree
         data={tree}
         pathFunc="step"
         collapsible={false}
         renderCustomNodeElement={renderRectSvgNode}
-        translate={{
-          x: 500,
-          y: 350,
-        }}
+        translate={translate}
       />
       {modalIsOpen && selectedNode && (
         <NodeModal
@@ -180,7 +188,7 @@ const NodeTree = () => {
           onCreateComment={handleCreateComment}
         />
       )}
-    </>
+    </div>
   );
 };
 
