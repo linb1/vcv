@@ -107,6 +107,7 @@ const NodeModal = ({
     traverse(selectedNode);
 
     onDeleteNode(ids);
+    closeModal();
   };
 
   // Disables buttons if any inputs are empty
