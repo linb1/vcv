@@ -9,6 +9,7 @@ This application lets you add nodes to a history as well as add/edit comments to
 
 [Figma Link](https://www.figma.com/design/PLkgr1tvAdU57eocVlGDZk/Interview-Assessment-(Copy)?node-id=2021-2&t=1PmKGr2jE6YQjR3D-1)
 
+
 ## Technologies
  - Frontend: NextJS, Redux, D3 Trees
  - Backend: Express, Prisma, PostgreSQL
@@ -22,6 +23,31 @@ Next.js and Redux/RTK Query on the client-side initiate requests that are sent t
  - Redux 9.1.2
  - Node v22.5.1
  - npm 10.8.2
+
+## How to run locally
+ - Clone this repository
+ - Create a new postgreSQL database
+ - In the server directory, create an .env file. It should have two variables
+     -  ```
+        PORT=8000
+        DATABASE_URL="postgresql://{user}:{password}@localhost:5432/{database_name}schema=public"
+        ```
+ - Use `npm i` to install packages
+ - Use `npx prisma migrate dev` to get migrations and schema
+     - If no generated client, run `npx prisma generate`
+ - Use `npm run seed `to insert seed data into your database
+ - Use `npm run dev` to start the server
+
+
+     
+ - In the client directory, create a .env.local. It should have:
+      - ```
+        NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+        ```
+ - Use `npm i` to install packages
+ - Use `npm run dev` to run the client
+        
+     
 
 ## Features/Requirements
 
