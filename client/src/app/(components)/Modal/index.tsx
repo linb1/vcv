@@ -23,6 +23,7 @@ type NodeModalProps = {
   selectedNode: RawNodeDatum;
   onCreateNode: (formData: NodeFormData) => void;
   onCreateComment: (formData: CommentFormData) => void;
+  onDeleteNode: (nodeId: string[]) => void;
 };
 
 const customStyles = {
@@ -37,6 +38,7 @@ const NodeModal = ({
   selectedNode,
   onCreateNode,
   onCreateComment,
+  onDeleteNode,
 }: NodeModalProps) => {
   // Get comments with node id
   const { data: comments } = useGetCommentsByNodeIdQuery(
@@ -92,9 +94,29 @@ const NodeModal = ({
     });
   };
 
+  // Use DFS to traverse and return all the child to be deleted
+  const handleDeleteAll = () => {
+    const ids: string[] = [];
+
+    const traverse = (currentNode: RawNodeDatum) => {
+      currentNode.children?.forEach((child) => traverse(child));
+
+      ids.push(currentNode!.attributes!.id.toString());
+    };
+
+    traverse(selectedNode);
+
+    onDeleteNode(ids);
+    closeModal();
+  };
+
   // Disables buttons if any inputs are empty
   const isAddNodeButtonDisabled = nodeFormData.name.trim().length === 0;
   const isAddCommentButtonDisabled = commentFormData.text.trim().length === 0;
+
+  // Disables delete button if on root node
+  const isDeleteNodeButtonDisabled =
+    selectedNode.attributes?.path.toString() === "root";
 
   return (
     <Modal
@@ -112,6 +134,13 @@ const NodeModal = ({
             {/* HEADER */}
             <h2 className="text-2xl pb-2">Node: {selectedNode.name}</h2>
             <h2 className="text-2xl pb-2">ID: {selectedNode.attributes?.id}</h2>
+            <button
+              onClick={handleDeleteAll}
+              disabled={isDeleteNodeButtonDisabled}
+              className="py-2 px-4 mb-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-100 text-red-800 hover:bg-red-200 focus:outline-none focus:bg-blue-200 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Delete Node
+            </button>
 
             <hr />
 

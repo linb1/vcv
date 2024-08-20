@@ -7,6 +7,7 @@ import {
   useGetNodesQuery,
   useCreateNodeMutation,
   useCreateCommentMutation,
+  useDeleteNodeMutation,
 } from "@/state/api";
 
 // Set server side rendering to false to allow for draggable screen
@@ -29,8 +30,21 @@ const NodeTree = () => {
   const { data, isLoading } = useGetNodesQuery();
   const [createNode] = useCreateNodeMutation();
   const [createComment] = useCreateCommentMutation();
+  const [deleteNode] = useDeleteNodeMutation();
 
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+
+  const handleDeleteNodes = async (nodeIds: string[]) => {
+    // Iterate over the array and delete each node
+    for (const id of nodeIds) {
+      try {
+        await deleteNode(id).unwrap();
+      } catch (error) {
+        console.error(`Failed to delete node with ID ${id}:`, error);
+        break; // Stop deletion if an error occurs
+      }
+    }
+  };
 
   //Processes form to create node
   const handleCreateNode = async (nodeData: NodeFormData) => {
@@ -192,6 +206,7 @@ const NodeTree = () => {
           selectedNode={selectedNode}
           onCreateNode={handleCreateNode}
           onCreateComment={handleCreateComment}
+          onDeleteNode={handleDeleteNodes}
         />
       )}
     </div>

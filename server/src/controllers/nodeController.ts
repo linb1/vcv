@@ -58,3 +58,32 @@ export const createNode = async (
     res.status(500).json({ message: "Error creating node" });
   }
 };
+
+// Deletes a node and all associated comments
+export const deleteNode = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+
+  try {
+    // First, delete all comments associated with the node
+    await prisma.comments.deleteMany({
+      where: {
+        tag: id,
+      },
+    });
+
+    // Then, delete the node itself
+    const deletedNode = await prisma.nodes.delete({
+      where: { id },
+    });
+
+    res.json({
+      message: "Node and associated comments deleted successfully",
+      node: deletedNode,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting node and comments" });
+  }
+};
