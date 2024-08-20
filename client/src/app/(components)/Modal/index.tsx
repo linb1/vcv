@@ -103,6 +103,7 @@ const NodeModal = ({
           <div>
             {/* HEADER */}
             <h2 className="text-2xl pb-2">Node: {selectedNode.name}</h2>
+            <h2 className="text-2xl pb-2">ID: {selectedNode.attributes?.id}</h2>
 
             <hr />
 
