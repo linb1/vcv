@@ -38,27 +38,32 @@ const NodeModal = ({
   onCreateNode,
   onCreateComment,
 }: NodeModalProps) => {
-  const { data: comments, isLoading } = useGetCommentsByNodeIdQuery(
+  // Get comments with node id
+  const { data: comments } = useGetCommentsByNodeIdQuery(
     selectedNode!.attributes!.id.toString()
   );
 
+  // Initial object sets prev to current node id
   const [nodeFormData, setNodeFormData] = useState({
     prev: selectedNode!.attributes!.id.toString(),
     name: "",
     path: "",
   });
 
+  // Initial object sets tag to current node id
   const [commentFormData, setCommentFormData] = useState({
     tag: selectedNode!.attributes!.id.toString(),
     text: "",
   });
 
+  // Submits node form data
   const handleSubmitNode = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onCreateNode(nodeFormData);
     closeModal();
   };
 
+  // Submits comment form data, then empties the textarea
   const handleSubmitComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onCreateComment(commentFormData);
@@ -68,6 +73,7 @@ const NodeModal = ({
     });
   };
 
+  // Updates useState for node
   const handleChangeNode = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNodeFormData({
@@ -77,6 +83,7 @@ const NodeModal = ({
     });
   };
 
+  // Updates useState for comment
   const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setCommentFormData({
@@ -85,6 +92,7 @@ const NodeModal = ({
     });
   };
 
+  // Disables buttons if any inputs are empty
   const isAddNodeButtonDisabled = nodeFormData.name.trim().length === 0;
   const isAddCommentButtonDisabled = commentFormData.text.trim().length === 0;
 

@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// Gets nodes and formats data to work with D3 Tree
 export const getNodes = async (req: Request, res: Response): Promise<void> => {
   try {
     const nodes = await prisma.nodes.findMany();
@@ -38,6 +39,7 @@ export const getNodes = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// Creates a node
 export const createNode = async (
   req: Request,
   res: Response

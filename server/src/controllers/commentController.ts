@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// Gets all comments
 export const getComments = async (
   req: Request,
   res: Response
@@ -15,6 +16,7 @@ export const getComments = async (
   }
 };
 
+// Get all comments associated with a specific node
 export const getCommentsByNodeId = async (
   req: Request,
   res: Response
@@ -32,6 +34,7 @@ export const getCommentsByNodeId = async (
   }
 };
 
+// Creates a comment
 export const createComment = async (
   req: Request,
   res: Response
@@ -50,6 +53,7 @@ export const createComment = async (
   }
 };
 
+// Updates a comment
 export const updateComment = async (
   req: Request,
   res: Response

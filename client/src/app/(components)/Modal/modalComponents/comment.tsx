@@ -17,6 +17,7 @@ const Comment = ({ comment }: CommentProps) => {
   const [displayedText, setDisplayedText] = useState(comment.text);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Processes PUT request for comment
   const handleUpdateComment = async (id: number) => {
     try {
       await updateComment({ id, text: displayedText }).unwrap();
@@ -25,30 +26,36 @@ const Comment = ({ comment }: CommentProps) => {
     }
   };
 
+  // Handles if user is currently editing
   const handleIsEditing = () => {
     setDisplayedText(comment.text);
     setIsEditing(!isEditing);
   };
 
+  // Updates useState for displayedText
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setDisplayedText(value);
   };
 
+  //Submits form for updating comment
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleUpdateComment(comment.id);
     setIsEditing(false);
   };
 
+  // Disables save button if the edit textarea is empty
   const isSaveButtonDisabled = displayedText.trim().length === 0;
 
   return (
     <div className="py-2 px-4 mb-3 rounded-lg bg-slate-50">
       <div className="flex items-center gap-4">
+        {/* Avatar */}
         <div className="w-10 h-10 rounded-full border border-blue-300 flex justify-center items-center overflow-hidden flex-shrink-0">
           <UserRound className="w-10 h-10 bg-blue-200" color="#FFFFFF" />
         </div>
+        {/* Render edit form or display comment based on isEditing */}
         {isEditing ? (
           <div className="w-full">
             <form onSubmit={handleSubmit}>

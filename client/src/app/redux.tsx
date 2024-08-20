@@ -22,6 +22,7 @@ import {
 import { PersistGate } from "redux-persist/integration/react";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
+// Create a noop storage for server-side rendering where local storage isn't available
 const createNoopStorage = () => {
   return {
     getItem(_key: any) {
@@ -36,11 +37,13 @@ const createNoopStorage = () => {
   };
 };
 
+// Determine whether to use local storage or noop storage based on environment
 const storage =
   typeof window === "undefined"
     ? createNoopStorage()
     : createWebStorage("local");
 
+// Configuration for redux-persist
 const persistConfig = {
   timeout: 500,
   key: "root",
@@ -48,12 +51,15 @@ const persistConfig = {
   whitelist: [api.reducerPath],
 };
 
+// Combine reducers into a root reducer
 const rootReducer = combineReducers({
   [api.reducerPath]: api.reducer,
 });
 
+// Create a persisted reducer with the given configuration
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// Create and configure the Redux store
 export const makeStore = () => {
   return configureStore({
     reducer: persistedReducer,

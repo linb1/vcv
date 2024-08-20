@@ -1,6 +1,7 @@
 import { Network } from "lucide-react";
 import React from "react";
 
+// Provides summary of the project
 const Overlay = () => {
   return (
     <div className="fixed h-screen w-1/5 min-w-60 bg-white shadow-md border border-slate-300">
