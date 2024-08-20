@@ -9,6 +9,7 @@ import {
   useCreateCommentMutation,
 } from "@/state/api";
 
+// Set server side rendering to false to allow for draggable screen
 const Tree = dynamic(() => import("react-d3-tree"), {
   ssr: false,
 });
@@ -31,14 +32,17 @@ const NodeTree = () => {
 
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
+  //Process form to create node
   const handleCreateNode = async (nodeData: NodeFormData) => {
     await createNode(nodeData);
   };
 
+  //Process form to create comment
   const handleCreateComment = async (commentData: CommentFormData) => {
     await createComment(commentData);
   };
 
+  // Use default node if data is not defined
   const [tree, setTree] = useState<RawNodeDatum | RawNodeDatum[]>(
     data || {
       name: "Root",
@@ -92,6 +96,7 @@ const NodeTree = () => {
     return branch;
   };
 
+  // Custom node element
   const renderRectSvgNode = ({
     nodeDatum,
     toggleNode,
@@ -103,6 +108,7 @@ const NodeTree = () => {
     const nameBoxHeight = 18;
     const nameBoxWidth = nodeDatum.name.length * 7 + 2 * nameBoxPadding;
 
+    // Change stroke color based off branch
     const branch = findBranchUpToRoot(tree as RawNodeDatum, hoveredNodeId!);
     const isHoveredBranch = branch.some(
       (n) => n.attributes?.id === nodeDatum.attributes?.id
