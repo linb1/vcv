@@ -1,6 +1,7 @@
 # Interview-Trexquant: Version Control Visualizer
 
-<img width="1000" alt="image" src="https://github.com/user-attachments/assets/ff523dd3-02de-4fcb-a487-836ac90d164b">
+
+<img width="1115" alt="image" src="https://github.com/user-attachments/assets/5635c55d-9ea2-44ae-b7ea-5666e2b66ad2">
 
 
 This application lets you add nodes to a history as well as add/edit comments to a node.
@@ -58,6 +59,7 @@ User requirements:
 - View the path to the original node.
 - Be able to add and edit comments to any node.
 - The state of the version history should persist between sessions of your application.
+- BONUS: Allow the user to revert to a certain node in the history. This will delete all the nodes proceeding that node. When a user returns to your application, the reverted state should persist between sessions of your application.
 
 ## Add new node/branch off a node in the history
 
@@ -175,4 +177,53 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 ```
 
 This code utilizes redux-persist to persist sessions of the application
+
+## Delete a node and all it's descendant 
+
+Users can click on a node to open a modal with the option to delete the node. It will delete the current node as well as it's children. This will also delete any related comments
+
+```typescript
+const handleDeleteAll = () => {
+    const ids: string[] = [];
+
+    const traverse = (currentNode: RawNodeDatum) => {
+      currentNode.children?.forEach((child) => traverse(child));
+
+      ids.push(currentNode!.attributes!.id.toString());
+    };
+
+    traverse(selectedNode);
+
+    onDeleteNode(ids);
+    closeModal();
+  };
+```
+
+This function uses depth-first traversal in order to grab all of the current node's children and stores all the ids in an array. `onDeleteNode` then uses the array to delete the nodes.
+
+```typescript
+export const deleteNode = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  try {
+    await prisma.comments.deleteMany({
+      where: {
+        tag: id,
+      },
+    });
+    const deletedNode = await prisma.nodes.delete({
+      where: { id },
+    });
+    res.json({
+      message: "Node and associated comments deleted successfully",
+      node: deletedNode,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting node and comments" });
+  }
+};
+```
+The node controller then deletes all the associated comments of a node before delete it
 
