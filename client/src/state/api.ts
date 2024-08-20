@@ -30,6 +30,11 @@ export interface UpdateComment {
   text: string;
 }
 
+export interface DeleteNodeResponse {
+  message: string;
+  node: Node;
+}
+
 // Endpoints for making request to backend express server
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL }),
@@ -68,6 +73,13 @@ export const api = createApi({
       }),
       invalidatesTags: ["Comments"],
     }),
+    deleteNode: build.mutation<DeleteNodeResponse, string>({
+      query: (id) => ({
+        url: `/nodes/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Nodes", "Comments"],
+    }),
   }),
 });
 
@@ -78,4 +90,5 @@ export const {
   useGetCommentsByNodeIdQuery,
   useCreateCommentMutation,
   useUpdateCommentMutation,
+  useDeleteNodeMutation,
 } = api;
