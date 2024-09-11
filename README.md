@@ -6,8 +6,6 @@
 
 This application lets you add nodes to a history as well as add/edit comments to a node.
 
-[Live Link](https://main.d2db2rn861mmy2.amplifyapp.com/)
-
 [Figma Link](https://www.figma.com/design/PLkgr1tvAdU57eocVlGDZk/Interview-Assessment-(Copy)?node-id=2021-2&t=1PmKGr2jE6YQjR3D-1)
 
 
