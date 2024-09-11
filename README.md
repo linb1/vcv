@@ -1,7 +1,8 @@
 # Interview-Trexquant: Version Control Visualizer
 
 
-<img width="1115" alt="image" src="https://github.com/user-attachments/assets/5635c55d-9ea2-44ae-b7ea-5666e2b66ad2">
+<img width="1100" alt="image" src="https://github.com/user-attachments/assets/7b146e8b-7fb8-4db7-8ac4-55b00a5576cf">
+
 
 
 This application lets you add nodes to a history as well as add/edit comments to a node.
