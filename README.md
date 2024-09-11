@@ -1,4 +1,4 @@
-# Interview-Trexquant: Version Control Visualizer
+# Version Control Visualizer
 
 
 <img width="1100" alt="image" src="https://github.com/user-attachments/assets/7b146e8b-7fb8-4db7-8ac4-55b00a5576cf">
